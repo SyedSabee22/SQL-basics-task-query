@@ -21,7 +21,7 @@ INSERT INTO Customers (user_id, name, email) VALUES
 (8, "Arif", "arif@gmail.com"),
 (9, "Sohani", "sohani@gmail.com"),
 (10, "Punam", "punam@gmail.com");
-
+SELECT * FROM Customers;
 -- Step 3: Create the Books (Products) Table
 CREATE TABLE Books (
     product_id INT PRIMARY KEY,
@@ -50,6 +50,7 @@ CREATE TABLE Orders (
     order_date DATE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Customers(user_id)
 );
+SELECT * FROM Orders;
 
 -- Insert data into Orders table
 INSERT INTO Orders (transaction_id, user_id, order_date) VALUES
@@ -73,7 +74,7 @@ CREATE TABLE OrderDetails (
     FOREIGN KEY (transaction_id) REFERENCES Orders(transaction_id),
     FOREIGN KEY (product_id) REFERENCES Books(product_id)
 );
-
+Select* From OrderDetails;
 -- Insert data into OrderDetails table
 INSERT INTO OrderDetails (transaction_id, product_id, quantity) VALUES
 (11, 01, 2),  -- Transaction 1, Product 1 (2 copies)
@@ -87,23 +88,16 @@ INSERT INTO OrderDetails (transaction_id, product_id, quantity) VALUES
 (101, 010, 13);  
 -- 1.	Write a SQL query to retrieve the top 5 customers who have purchased the 
 -- most books (by total quantity) over the last year.
-SELECT
-    c.user_id,
-    c.name,
-    c.email,
-    SUM(od.quantity) AS total_books_purchased
-FROM
-    Customers c
-JOIN
-    Orders o ON c.user_id = o.user_id
-JOIN
-    OrderDetails od ON o.transaction_id = od.transaction_id
-WHERE
-    o.order_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
-GROUP BY
-    c.user_id, c.name, c.email
-ORDER BY
-    total_books_purchased DESC
+SELECT c.user_id, 
+       c.name, 
+       c.email, 
+       SUM(od.quantity) AS total_quantity
+FROM Customers c
+JOIN Orders o ON c.user_id = o.user_id
+JOIN OrderDetails od ON o.transaction_id = od.transaction_id
+WHERE o.order_date >= '2023-01-01' AND o.order_date <= '2023-12-31'
+GROUP BY c.user_id, c.name, c.email
+ORDER BY total_quantity DESC
 LIMIT 5;
 -- 2.	Write a SQL query to calculate the total 
 -- revenue generated from book sales by each author.
@@ -120,7 +114,8 @@ GROUP BY
     b.author
 ORDER BY
     total_revenue DESC;
-    -- 3.	Write a SQL query to retrieve all 
+
+   -- 3.Write a SQL query to retrieve all 
     -- books that have been ordered more than 10 times, 
     -- along with the total quantity ordered for each book.
 
@@ -140,5 +135,5 @@ GROUP BY
 HAVING
     SUM(od.quantity) > 10
 ORDER BY
-    total_quantity_ordered DESC;
-
+    total_quantity_ordered DESC
+    Limit 6;
